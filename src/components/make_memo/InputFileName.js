@@ -1,4 +1,4 @@
-export function InputFileName() {
+export const InputFileName = () => {
   return (
     <input
       type="text"
@@ -9,4 +9,4 @@ export function InputFileName() {
       required
     />
   );
-}
+};

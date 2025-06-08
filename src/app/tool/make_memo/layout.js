@@ -13,12 +13,10 @@ const geistMono = Geist_Mono({
 });
 
 export default function RootLayout({ children }) {
-  return (
-    <html lang="ja">
-      <body className="vsc-initialized relative">
+  return <html lang="ja">
+      <body className="vsc-initialized">
         <SiteHeader />
         {children}
       </body>
-    </html>
-  );
+    </html>;
 }

@@ -3,76 +3,51 @@ import Image from 'next/image';
 import { InputFileName } from 'components/make_memo/InputFileName.js';
 import { Button } from 'components/make_memo/Button.js';
 import { Textarea } from 'components/make_memo/Textarea.js';
-import { Menu_button } from 'components/make_memo/Menu_button';
+import { OpenMenuButton } from 'components/make_memo/OpenMenuButton';
 import { use, useState } from 'react';
 import { useEffect } from 'react';
 import { useRef } from 'react';
-import { RefObject } from 'react';
 import React from 'react';
-
-// メニューボタンにref作ってボタンの位置動かす？
-let textareaElementList = [];
+//export const Home = () => {
 export default function Home() {
+  // Textarea等があるareaのRef
   const memoAreaRef = useRef(null);
-  const menuButtonRef = useRef(null);
-  const menuRef = useRef(null);
-  const textareaRefs = useRef([]);
-  //const newTextarea = new Textarea(
-  //  textarea_on_key_down_event,
-  //  textarea_click_event
-  //);
-  const NewTextarea = () =>
-    <Textarea
-      onKeyDown={textarea_on_key_down_event}
-      onClick={textarea_click_event}
-    />;
+  //
+  const menuWrapperRef = useRef(null);
+  const textareaRefs = useRef({});
   const [textareaElementIds, setTextareaElementIds] = useState(['Textarea0']);
-  //const [textarea_elements, setTextareaElements] = useState([<NewTextarea />]);
-  const [menu_button_height, setMenuButtonHeight] = useState('translate-y-0');
+  const [activeElement, setActiveElement] = useState('Textarea0');
+  /*
+  activeElementが変更されたときに実行される
+  activeElementへのフォーカスとmenuButtonの高さの変更
+  */
+  useEffect(
+    () => {
+      focusMenuButton(activeElement);
+      setOpenMenuButtonHeight(activeElement);
+    },
+    [activeElement]
+  );
   /*
   textareaでshift+enterしたときtextareaを追加する
   */
-  function textarea_on_key_down_event(e) {
+  function textareaOnKeyDownEvent(e) {
     if (e.key === 'Enter' && e.shiftKey) {
-      const index = textareaRefs.current.findIndex(
-        ref => ref.current === e.target
-      );
+      const index = Number(e.target.getAttribute('data-index'));
       e.preventDefault();
-      addTextarea(index, 'Textarea' + textareaElementIds.length);
+      addTextarea(index + 1, 'Textarea' + textareaElementIds.length);
     }
   }
-  /*ここだとちゃんと見れる */
-  // useEffect(
-  //   () => {
-  //     console.log('aa');
-  //     console.log(textarea_elements);
-  //   },
-  //   [textarea_elements]
-  // );
   /*
-  引数として受け取った要素をindexの次の位置に追加する関数にしたい
-  textareaElementsの更新をした後にconsole.logで確認しても、初期値が表示される
+  textareaを追加する関数
+  index             : 追加したい場所のindex
+  textareaElementId : 
   */
-
   function addTextarea(index, textareaElementId) {
+    setActiveElement(textareaElementId);
     var newTextareaElementIds = [...textareaElementIds];
     newTextareaElementIds.splice(index, 0, textareaElementId);
     setTextareaElementIds(newTextareaElementIds);
-    console.log(textareaElementIds);
-    //console.log(textarea_elements);
-    //const newTextareaElements = [...textarea_elements];
-    //newTextareaElements.splice(index + 1, 0, newElement);
-    //setTextareaElements(newTextareaElements);
-    //const addNewTextarea = newTextarea;
-    //const newTextareaElements = [...textarea_elements];
-    //newTextareaElements.push(newElement);
-    //console.log(newTextareaElements);
-    //setTextareaElements([...newTextareaElements]);
-    //console.log(textarea_elements);
-    //setTextareaElements(elements => [...elements, newElement]);
-    //console.log(textarea_elements);
-    //textareaElementList.push(addNewTextarea);
-    //console.log(textareaElementList);
   }
   /*
   メニューボタンの位置を設定する関数
@@ -80,78 +55,93 @@ export default function Home() {
   いずれはアクティブな所を保存して、そこに移動させるようにしたいかな？
   あと、改行したときに上に張り付くからそれも直す
   */
-  function set_button_height(clickTextarea) {
-    textareaRefs.current.map((ref, index) => {
-      if (ref.current === clickTextarea) {
-        const textarea_ref = ref.current;
-        const clickTextareaLocateTop = Math.round(
-          textarea_ref.getBoundingClientRect().top -
-            memoAreaRef.current.getBoundingClientRect().top
-        );
-        menuButtonRef.current.style.position = 'absolute';
-        menuButtonRef.current.style.top = clickTextareaLocateTop + 'px';
-      }
-    });
+  function setOpenMenuButtonHeight(clickTextarea) {
+    const textareaRef = textareaRefs.current[clickTextarea].current;
+    const clickTextareaLocateTop = Math.round(
+      textareaRef.getBoundingClientRect().top -
+        memoAreaRef.current.getBoundingClientRect().top
+    );
+    // absoluteはデフォルトで設定するべき
+    menuWrapperRef.current.style.top = clickTextareaLocateTop + 'px';
   }
-  function textarea_click_event(e) {
-    set_button_height(e.target);
+  function focusMenuButton(textareaElementId) {
+    textareaRefs.current[textareaElementId].current.focus();
   }
-  function addImageButtonClickEvent() {
+  function textareaClickEvent(e) {
+    setActiveElement(e.target.id);
+  }
+  function addImage() {
     console.log('addImage');
   }
-  function addLinkButtonClickEvent() {
+  function addLink() {
     console.log('addLink');
   }
-  function load_button_event() {
-    console.log('test');
+  function addTable() {
+    console.log('addTable');
   }
-  function save_button_event() {}
-  function convert_file_button_event() {}
-  function menu_button_event() {}
+  function addCode() {
+    console.log('addCode');
+  }
+  function addUl() {
+    console.log('addUl');
+  }
+  function addOl() {
+    console.log('addOl');
+  }
+  function addHr() {
+    console.log('addHr');
+  }
+  function deleteTextarea() {
+    console.log('delete');
+  }
+  function loadButtonEvent() {
+    console.log('load');
+  }
+  function saveButtonEvent() {
+    console.log('save');
+  }
+  function convertFileButtonEvent() {
+    console.log('convert');
+  }
   return (
     <main>
       <div>
         <InputFileName />
-        <Button value="読み込み" onClick={load_button_event} className="loadBtn" />
-        <Button value="保存" onClick={save_button_event} className="saveBtn" />
+        <Button value="読み込み" onClick={loadButtonEvent} className="loadBtn" />
+        <Button value="保存" onClick={saveButtonEvent} className="saveBtn" />
         <Button
           value="ファイルに変換"
-          onClick={convert_file_button_event}
+          onClick={convertFileButtonEvent}
           className="convertBtn"
         />
       </div>
 
       <div className="flex">
         <div id="menu_button_div">
-          <Menu_button
-            className={menu_button_height}
-            ref={menuRef}
-            menuButtonRef={menuButtonRef}
-            onImageButtonClick={addImageButtonClickEvent}
-            onLinkButtonClick={addLinkButtonClickEvent}
+          <OpenMenuButton
+            menuWrapperRef={menuWrapperRef}
+            addImage={addImage}
+            addLink={addLink}
+            addTable={addTable}
+            addCode={addCode}
+            addUl={addUl}
+            addOl={addOl}
+            addHr={addHr}
+            deleteTextarea={deleteTextarea}
           />
         </div>
         <div className="flex-auto" ref={memoAreaRef}>
           {textareaElementIds.map((key, index) => {
-            //element.index = index;
-            //element.ref = textareaRefs.current[index] = React.createRef();
-
-            //console.log(textarea_elements);
-            //ここだとちゃんと見れる
-            // return (
-            //   // ここdivにkeyを設定しないといけないけど、elementにkeyを設定してもいいようにしたい
-            //   <div key={index}>
-            //     {element.render()}
-            //   </div>
-            // );
+            const ref = React.createRef();
+            textareaRefs.current[key] = ref;
             return (
               <Textarea
+                id={key}
+                data_index={index}
                 key={key}
-                ref={el => {
-                  textareaRefs.current[index] = el;
-                }}
-                onKeyDown={textarea_on_key_down_event}
-                onClick={textarea_click_event}
+                ref={ref}
+                onKeyDown={textareaOnKeyDownEvent}
+                onClick={textareaClickEvent}
               />
             );
           })}
