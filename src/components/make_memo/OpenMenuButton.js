@@ -1,51 +1,78 @@
 import Image from 'next/image';
 import { useClickAway } from "@uidotdev/usehooks";
-import {useState} from 'react';
+import {useState,useRef} from 'react';
+import { PopupWrapper } from './PopupWrapper'
 
 export const OpenMenuButton = ({menuWrapperRef,addImage,addLink,addTable,addCode,addUl,addOl,addHr,deleteTextarea}) => {
-  const [isOpen,setIsOpen] = useState(false);
-  const clickAwayRef = useClickAway(() => {
-    setIsOpen(false);
+  const [isOpenMenu,setIsOpenMenu] = useState(false);
+  let imgUrl = "";
+  const menuClickAwayRef = useClickAway(() => {
+    setIsOpenMenu(false);
   });
 
   const handleOpenModal = () => {
-    if(!isOpen){
-        setIsOpen(true);
+    if(!isOpenMenu){
+        setIsOpenMenu(true);
     }
   };
+
+  const [isOpenImagePopup,setIsOpenImagePopup] = useState(false);
+  const imageClickAwayRef = useClickAway(() => {
+    setIsOpenMenu(false);
+  });
+
+  const handleOpenImagePopup = () => {
+    if(!isOpenImagePopup){
+        setIsOpenImagePopup(true);
+    }
+  };
+  const handleCloseImagePopup = () => {
+    if(isOpenImagePopup){
+        setIsOpenImagePopup(false);
+    }
+  };
+
+  const imgFileRef = useRef(null);
+  function onChangeInputImage(e){
+    console.log(imgFileRef)
+    console.log(e.target.files[0])
+    console.log(window.URL.createObjectURL(e.target.files[0]))
+    console.log(imgFileRef.current.files[0]);
+    handleOpenImagePopup();
+  }
   function onAddImage(){
-    addImage();
-    setIsOpen(false);
+    imgFileRef.current.click();
+    setIsOpenMenu(false);
   }
   function onAddLink(){
     addLink();
-    setIsOpen(false);
+    setIsOpenMenu(false);
   }
   function onAddTable(){
     addTable();
-    setIsOpen(false);
+    setIsOpenMenu(false);
   }
   function onAddCode(){
     addCode();
-    setIsOpen(false);
+    setIsOpenMenu(false);
   }
   function onAddUl(){
     addUl();
-    setIsOpen(false);
+    setIsOpenMenu(false);
   }
   function onAddOl(){
     addOl();
-    setIsOpen(false);
+    setIsOpenMenu(false);
   }
   function onAddHr(){
     addHr();
-    setIsOpen(false);
+    setIsOpenMenu(false);
   }
   function onDeleteTextarea(){
     deleteTextarea();
-    setIsOpen(false);
+    setIsOpenMenu(false);
   }
-
+  
   return (
     <div ref={menuWrapperRef} className='absolute'>
       <button
@@ -54,8 +81,9 @@ export const OpenMenuButton = ({menuWrapperRef,addImage,addLink,addTable,addCode
       >
         +
       </button>
-      {isOpen && (
-  <Menu ref={clickAwayRef} 
+      <input hidden type="file" accept='image/*' ref={imgFileRef} onChange={onChangeInputImage} ></input>
+      {isOpenMenu && (
+  <Menu ref={menuClickAwayRef} 
   onAddImage={onAddImage}
   onAddLink={onAddLink}
   onAddTable={onAddTable}
@@ -66,10 +94,28 @@ export const OpenMenuButton = ({menuWrapperRef,addImage,addLink,addTable,addCode
   onDeleteTextarea={onDeleteTextarea}
   />
 )}
+{isOpenImagePopup && (
+  <ImagePopup close={handleCloseImagePopup}></ImagePopup>
+  )}
+  
     </div>
   );
 }
-const Menu = ({ ref ,onAddImage,onAddLink,onAddTable,onAddCode,onAddUl,onAddOl,onAddHr,onDeleteTextarea}) => {
+// const ImagePopup = ({close}) =>{
+//   const widthRef = useRef(null);
+//   const heightRef = useRef(null);
+
+//   const onClick = () =>{
+//     addImage(widthRef.current.value,heightRef.current.value)
+//   }
+//   return (
+//     <PopupWrapper close={close} title="画像追加">
+//       <InputNumber ref={heightRef} label="高さ"/>
+//       <InputNumber ref={widthRef} label="幅"/>
+//     </PopupWrapper>
+//   )
+// }
+const Menu = ({onChangeInputImage,imgFileRef ,ref ,onAddImage,onAddLink,onAddTable,onAddCode,onAddUl,onAddOl,onAddHr,onDeleteTextarea}) => {
   return (
     //translate-y-0
     <>
@@ -78,6 +124,7 @@ const Menu = ({ ref ,onAddImage,onAddLink,onAddTable,onAddCode,onAddUl,onAddOl,o
         //id="menu"
         ref={ref}
       >
+        {/* <input hidden type="file" accept='image/*' ref={imgFileRef} onChange={() => {console.log("change")}}></input> */}
         <MenuItem fileName="img.png" onClick={onAddImage}/>
         <MenuItem fileName="link.png" onClick={onAddLink}/>
         <MenuItem fileName="table.png" onClick={onAddTable}/>
@@ -90,6 +137,51 @@ const Menu = ({ ref ,onAddImage,onAddLink,onAddTable,onAddCode,onAddUl,onAddOl,o
     </>
   );
 }
+// const InputNumber = ({label}) =>{
+//   return (
+//     <div className="flex flex-col space-y-2">
+//   <label htmlFor="numberField" className="text-sm font-medium text-gray-700">
+//     {label}
+//   </label>
+//   <input
+//     id="numberField"
+//     type="number"
+//     placeholder="0"
+//     className="w-full px-4 py-2 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+//   />
+// </div>
+//   )
+// }
+// const InputTextarea = ({label,placeholder}) => {
+//   return (
+//     <div className="flex flex-col space-y-2">
+//   <label htmlFor="textareaField" className="text-sm font-medium text-gray-700">
+//     {label}
+//   </label>
+//   <textarea
+//     id="textareaField"
+//     placeholder={placeholder}
+//     rows="4"
+//     className="w-full px-4 py-2 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+//   ></textarea>
+// </div>
+//   )
+// }
+// const InputText = ({label,placeholder}) => {
+//   return (
+// <div className="flex flex-col space-y-2">
+//   <label htmlFor="inputField" className="text-sm font-medium text-gray-700">
+//     {label}
+//   </label>
+//   <input
+//     id="inputField"
+//     type="text"
+//     placeholder={placeholder}
+//     className="w-full px-4 py-2 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+//   />
+// </div>
+//   )
+// }
 const MenuItem = ({ fileName ,onClick}) => {
   return (
     <div className="hover:cursor-pointer hover:bg-gray-400 rounded-md transition-all duration-200 ease-in-out m-1">

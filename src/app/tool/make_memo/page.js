@@ -8,6 +8,7 @@ import { use, useState } from 'react';
 import { useEffect } from 'react';
 import { useRef } from 'react';
 import React from 'react';
+import { RightClickMenu } from 'components/make_memo/RightClickMenu';
 //export const Home = () => {
 export default function Home() {
   // Textarea等があるareaのRef
@@ -17,6 +18,14 @@ export default function Home() {
   const textareaRefs = useRef({});
   const [textareaElementIds, setTextareaElementIds] = useState(['Textarea0']);
   const [activeElement, setActiveElement] = useState('Textarea0');
+  const [rightClickMenu,setRightClickMenu] = useState("");
+  const closeRightClickMenu = () =>{
+    setRightClickMenu(null);
+  }
+  const bodyClick = () => {
+    closeRightClickMenu();
+  }
+
   /*
   activeElementが変更されたときに実行される
   activeElementへのフォーカスとmenuButtonの高さの変更
@@ -103,8 +112,24 @@ export default function Home() {
   function convertFileButtonEvent() {
     console.log('convert');
   }
+  const onContextMenu = (e) =>{
+    //clickX = e.clientX;
+    //clickY = e.clientY;
+    //console.log(clickX)
+    //setRightClickMenuFlag(true);
+    e.preventDefault();
+    console.log(e.clickX);
+    setRightClickMenu(
+      <RightClickMenu clickX={e.clientX} clickY={e.clientY}></RightClickMenu>
+    );
+    // stateに<rightclickmenu>ireru?
+  }
   return (
-    <main>
+    <>
+      <>
+      {rightClickMenu}
+      </>
+    <main onContextMenu={onContextMenu} onClick={bodyClick}>
       <div>
         <InputFileName />
         <Button value="読み込み" onClick={loadButtonEvent} className="loadBtn" />
@@ -148,5 +173,6 @@ export default function Home() {
         </div>
       </div>
     </main>
+    </>
   );
 }
