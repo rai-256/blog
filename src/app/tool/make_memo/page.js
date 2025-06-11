@@ -9,6 +9,7 @@ import { useEffect } from 'react';
 import { useRef } from 'react';
 import React from 'react';
 import { RightClickMenu } from 'components/make_memo/RightClickMenu';
+import { ImagePopup } from 'components/make_memo/ImagePopup';
 //export const Home = () => {
 export default function Home() {
   // Textarea等があるareaのRef
@@ -16,9 +17,11 @@ export default function Home() {
   //
   const menuWrapperRef = useRef(null);
   const textareaRefs = useRef({});
+  const imgFileRef = useRef(null);
   const [textareaElementIds, setTextareaElementIds] = useState(['Textarea0']);
   const [activeElement, setActiveElement] = useState('Textarea0');
   const [rightClickMenu,setRightClickMenu] = useState("");
+  const [isOpenImagePopup,setIsOpenImagePopup] = useState(false);
   const closeRightClickMenu = () =>{
     setRightClickMenu(null);
   }
@@ -81,6 +84,19 @@ export default function Home() {
   }
   function addImage() {
     console.log('addImage');
+    imgFileRef.current.click();
+    //setIsOpenImagePopup();
+  }
+  
+  function onChangeInputImage(e){
+    console.log(imgFileRef)
+    console.log(e.target.files[0])
+    console.log(window.URL.createObjectURL(e.target.files[0]))
+    console.log(imgFileRef.current.files[0]);
+    handleOpenImagePopup();
+  }
+  function onChangeInputImage(){
+    setIsOpenImagePopup(true);
   }
   function addLink() {
     console.log('addLink');
@@ -128,6 +144,10 @@ export default function Home() {
     <>
       <>
       {rightClickMenu}
+      <input hidden type="file" accept='image/*' ref={imgFileRef} onChange={onChangeInputImage} ></input>
+      {isOpenImagePopup &&
+      <ImagePopup></ImagePopup>
+      }
       </>
     <main onContextMenu={onContextMenu} onClick={bodyClick}>
       <div>

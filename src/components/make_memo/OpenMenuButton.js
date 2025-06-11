@@ -41,7 +41,8 @@ export const OpenMenuButton = ({menuWrapperRef,addImage,addLink,addTable,addCode
     handleOpenImagePopup();
   }
   function onAddImage(){
-    imgFileRef.current.click();
+    //imgFileRef.current.click();
+    addImage();
     setIsOpenMenu(false);
   }
   function onAddLink(){
@@ -81,7 +82,7 @@ export const OpenMenuButton = ({menuWrapperRef,addImage,addLink,addTable,addCode
       >
         +
       </button>
-      <input hidden type="file" accept='image/*' ref={imgFileRef} onChange={onChangeInputImage} ></input>
+      {/* <input hidden type="file" accept='image/*' ref={imgFileRef} onChange={onChangeInputImage} ></input> */}
       {isOpenMenu && (
   <Menu ref={menuClickAwayRef} 
   onAddImage={onAddImage}
@@ -94,9 +95,9 @@ export const OpenMenuButton = ({menuWrapperRef,addImage,addLink,addTable,addCode
   onDeleteTextarea={onDeleteTextarea}
   />
 )}
-{isOpenImagePopup && (
+{/* {isOpenImagePopup && (
   <ImagePopup close={handleCloseImagePopup}></ImagePopup>
-  )}
+  )} */}
   
     </div>
   );

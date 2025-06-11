@@ -1,5 +1,6 @@
 import { PopupWrapper } from './PopupWrapper';
 import { InputNumber } from './InputNumber';
+import { useRef } from 'react';
 
 export const ImagePopup = ({ close }) => {
   const widthRef = useRef(null);
