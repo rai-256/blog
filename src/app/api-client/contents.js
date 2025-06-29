@@ -143,7 +143,14 @@ export const addContents = async (name, title, description, image) => {
   }
 };
 
-export const updateContents = async (id, name, title, description, image) => {
+export const updateContents = async (
+  id,
+  name,
+  title,
+  description,
+  image,
+  type_id
+) => {
   let base64Image = '';
   let imageName = '';
   if (image.length != 0) {
@@ -153,7 +160,7 @@ export const updateContents = async (id, name, title, description, image) => {
     console.log(base64Image);
   }
   try {
-    const res = await fetch(API_BASE_URL + 'update', {
+    const res = await fetch(API_BASE_URL, {
       method: 'PUT',
       mode: 'cors',
       credentials: 'include',
@@ -166,7 +173,8 @@ export const updateContents = async (id, name, title, description, image) => {
         title: title,
         description: description,
         base64Image: base64Image,
-        imageName: imageName
+        imageName: imageName,
+        type_id: type_id
       })
     });
 

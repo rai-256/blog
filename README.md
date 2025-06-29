@@ -1,3 +1,11 @@
+## 見にくい(醜い)ことになっているので少し現状を
+
+現状多少なりまともに書かれているもの
+- src/app/tool/make_memo/page.js
+- src/app/api-client
+- src/components/posts/*
+- src/components/hooks/*
+
 This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app).
 
 ## Getting Started
